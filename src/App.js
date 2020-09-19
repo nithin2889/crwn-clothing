@@ -11,10 +11,15 @@ import { setCurrentUser } from "./redux/user/user.actions";
 import "./App.css";
 
 class App extends React.Component {
+  // property on our class
   unsubscribeFromAuth = null;
 
   componentDidMount() {
     const { setCurrentUser } = this.props;
+    // This is an open subscription (open messaging system between our application
+    // and the firebase) and in order to avoid memory leak we need to unsubscribe
+    // and this connection will always be open as long as our application component
+    // is mounted on our DOM.
     this.unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
       if (userAuth) {
         const userRef = await createUserProfileDocument(userAuth);
@@ -30,6 +35,7 @@ class App extends React.Component {
     });
   }
 
+  // closing our subscription whenever our component unmounts.
   componentWillUnmount() {
     this.unsubscribeFromAuth();
   }
